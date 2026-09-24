@@ -35,23 +35,25 @@ body.drawer-abierto .header {
   gap: var(--space-xs);
 }
 
-/* Logo (visible desde 600px, ver responsive.css) */
+/* Logo circular de la fábrica */
 .logo {
-  display: none;
-  font-family: var(--font-serif);
-  font-size: var(--fs-md);
-  font-weight: 700;
-  white-space: nowrap;
-  background: var(--brand-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  transition: opacity var(--t-fast);
+  flex-shrink: 0;
+  display: inline-flex;
+  border-radius: 50%;
+  filter: drop-shadow(0 3px 8px rgba(var(--shade-rgb), 0.25));
+  transition: transform var(--t-fast);
 }
 
 .logo:hover {
-  opacity: 0.85;
+  transform: scale(1.06) rotate(-4deg);
+}
+
+.logo__img {
+  width: clamp(2.3rem, 2.1rem + 0.6vw, 2.75rem);
+  height: clamp(2.3rem, 2.1rem + 0.6vw, 2.75rem);
+  object-fit: cover;
+  /* El JPEG tiene esquinas blancas: el recorte circular las oculta */
+  clip-path: circle(48.5% at 50% 50%);
 }
 
 /* Botones de ícono (☰ y 🛒) */
@@ -70,7 +72,7 @@ body.drawer-abierto .header {
 }
 
 .btn-icono:hover {
-  background-color: rgba(224, 196, 154, 0.1);
+  background-color: rgba(var(--accent-rgb), 0.1);
   border-color: var(--glass-border);
 }
 
@@ -88,10 +90,10 @@ body.drawer-abierto .header {
   font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1;
-  color: var(--black);
-  background: var(--brand-gradient);
+  color: #fff;
+  background: var(--red);
   border-radius: var(--radius-pill);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 6px rgba(var(--shade-rgb), 0.3);
   transition: transform var(--t-fast);
 }
 
@@ -123,7 +125,7 @@ body.drawer-abierto .header {
   padding: 0 clamp(0.9rem, 0.8rem + 0.4vw, 1.2rem) 0 clamp(2.2rem, 2rem + 0.6vw, 2.6rem);
   font-size: var(--fs-sm);
   color: var(--text);
-  background: rgba(10, 10, 13, 0.45);
+  background: rgba(var(--bg-rgb), 0.45);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-pill);
   outline: none;
@@ -137,8 +139,8 @@ body.drawer-abierto .header {
 
 .buscador__input:focus {
   border-color: var(--accent);
-  background: rgba(10, 10, 13, 0.65);
-  box-shadow: 0 0 0 3px rgba(224, 196, 154, 0.15);
+  background: rgba(var(--bg-rgb), 0.65);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.15);
 }
 
 .buscador__input::-webkit-search-cancel-button {
@@ -165,6 +167,8 @@ body.drawer-abierto .header {
   font-weight: 600;
   letter-spacing: -0.01em;
   color: var(--accent-light);
+  /* Sombra amarilla desplazada: efecto "sticker" como las letras del logo */
+  text-shadow: 0.05em 0.05em 0 rgba(var(--yellow-rgb), 0.8);
   margin-bottom: var(--space-sm);
 }
 
@@ -191,11 +195,10 @@ body.drawer-abierto .header {
   position: absolute;
   inset: 0;
   z-index: -1;
+  /* Como el disco del logo: centro blanco que se funde en amarillo */
   background:
-    radial-gradient(circle at 50% 40%, rgba(224, 196, 154, 0.18), transparent 55%),
-    radial-gradient(circle at 15% 85%, rgba(107, 82, 48, 0.35), transparent 50%),
-    radial-gradient(circle at 85% 20%, rgba(184, 139, 74, 0.18), transparent 45%),
-    linear-gradient(180deg, var(--black-2) 0%, var(--black) 100%);
+    radial-gradient(ellipse 75% 80% at 50% 45%,
+      #FFFFFF 0%, #FFF7DA 32%, var(--yellow-light) 68%, var(--yellow) 100%);
 }
 
 /* Textura sutil tipo harina */
@@ -203,7 +206,7 @@ body.drawer-abierto .header {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(245, 232, 208, 0.06) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(var(--accent-light-rgb), 0.09) 1px, transparent 1px);
   background-size: 22px 22px;
   mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
@@ -232,11 +235,11 @@ body.drawer-abierto .header {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
-  background: var(--brand-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
+  color: var(--red);
+  /* Rojo con sombra oscura desplazada, como las letras del logo */
+  text-shadow:
+    0.035em 0.04em 0 var(--deep),
+    0 0.2em 0.6em rgba(var(--shade-rgb), 0.18);
   padding-bottom: 0.1em;
 }
 

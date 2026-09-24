@@ -10,7 +10,7 @@
   padding: clamp(2rem, 1.5rem + 2.5vw, 3.5rem) var(--gutter) clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
   text-align: center;
   border-top: 1px solid var(--hairline);
-  background: linear-gradient(180deg, transparent, rgba(var(--black-2-rgb), 0.8));
+  background: linear-gradient(180deg, transparent, rgba(var(--bg-2-rgb), 0.8));
 }
 
 .footer__texto {
@@ -35,7 +35,7 @@
   gap: clamp(0.8rem, 0.7rem + 0.5vw, 1.1rem);
   padding: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem) clamp(1rem, 0.9rem + 0.75vw, 1.5rem);
   text-align: left;
-  background: linear-gradient(160deg, var(--black-3), var(--black-2));
+  background: linear-gradient(160deg, var(--surface), var(--bg-2));
   border: 1px solid var(--hairline);
   border-radius: var(--radius-lg);
   transition: transform var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
@@ -76,7 +76,7 @@
 
 /* WhatsApp */
 .footer__link--wa .footer__nombre {
-  color: var(--wa);
+  color: #0E8A43; /* verde WhatsApp oscurecido para leerse sobre fondo claro */
 }
 
 .footer__link--wa .footer__icono {
@@ -138,7 +138,7 @@
 }
 
 .menu-contacto--wa {
-  color: var(--black);
+  color: #073B1C;
   background: var(--wa);
   box-shadow: 0 4px 16px rgba(var(--wa-rgb), 0.25);
 }

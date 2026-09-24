@@ -13,8 +13,9 @@
   padding-top: clamp(0.5rem, 0.25rem + 1.5vw, 2rem);
 }
 
-/* ---------- Grilla de tarjetas (1 columna en mobile) ---------- */
-#catalogo-container,
+/* ---------- Grilla de tarjetas (1 columna en mobile) ----------
+   Solo por clase: un selector de ID acá le ganaría a las media queries
+   de responsive.css y la grilla quedaría siempre en 1 columna. */
 .grilla {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -55,7 +56,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: linear-gradient(160deg, var(--black-3) 0%, var(--black-2) 55%, var(--black) 100%);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 55%, var(--bg) 100%);
   border: 1px solid var(--hairline);
   border-radius: 20px;
   transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
@@ -78,7 +79,7 @@
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 40%, var(--black-3), var(--black));
+  background: radial-gradient(circle at 50% 40%, var(--surface), var(--bg));
   border-radius: 20px 20px 0 0;
 }
 
@@ -105,10 +106,10 @@ button.perfume-card__imagen {
   display: grid;
   place-items: center;
   font-size: clamp(2.5rem, 2rem + 2vw, 3.5rem);
-  color: rgba(var(--accent-rgb), 0.35);
+  color: rgba(var(--accent-rgb), 0.45);
   background:
-    radial-gradient(circle at 50% 45%, rgba(var(--accent-rgb), 0.08), transparent 60%),
-    linear-gradient(160deg, var(--black-3), var(--black));
+    radial-gradient(circle at 50% 45%, #FFFFFF 0%, rgba(var(--yellow-rgb), 0.35) 55%, rgba(var(--yellow-rgb), 0.6) 100%),
+    var(--bg);
 }
 
 .perfume-card__placeholder::before {
@@ -124,7 +125,7 @@ button.perfume-card__imagen {
   font-size: var(--fs-xs);
   font-weight: 500;
   color: var(--accent-light);
-  background: rgba(var(--black-rgb), 0.65);
+  background: rgba(var(--bg-rgb), 0.65);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-pill);
   -webkit-backdrop-filter: blur(8px);
@@ -143,7 +144,7 @@ button.perfume-card__imagen {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text);
-  background: rgba(var(--black-rgb), 0.75);
+  background: rgba(var(--bg-rgb), 0.75);
   border: 1px solid var(--hairline);
   border-radius: var(--radius-pill);
 }
@@ -211,7 +212,7 @@ button.perfume-card__imagen {
   padding: clamp(0.6rem, 0.55rem + 0.3vw, 0.8rem) clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem);
   font-size: var(--fs-sm);
   font-weight: 600;
-  color: var(--black);
+  color: var(--on-brand);
   background: var(--brand-gradient);
   background-size: 200% 200%;
   border-radius: var(--radius-pill);
@@ -263,7 +264,7 @@ button.perfume-card__imagen {
   position: fixed;
   inset: 0;
   z-index: var(--z-overlay);
-  background: rgba(var(--black-rgb), 0.65);
+  background: rgba(var(--shade-rgb), 0.35);
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   opacity: 0;
@@ -284,6 +285,8 @@ button.perfume-card__imagen {
   bottom: 0;
   z-index: var(--z-drawer);
   width: min(85vw, 20rem);
+  /* Casi opaco: sobre el overlay, el vidrio translúcido se veía turbio */
+  background: rgba(var(--surface-rgb), 0.96);
   display: flex;
   flex-direction: column;
   gap: clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);
@@ -493,7 +496,7 @@ button.perfume-card__imagen {
   font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1;
-  color: var(--black);
+  color: var(--on-brand);
   background: var(--brand-gradient);
   border-radius: var(--radius-pill);
 }
@@ -542,7 +545,7 @@ button.perfume-card__imagen {
   flex-shrink: 0;
   width: 1.05rem;
   height: 1.05rem;
-  background: rgba(var(--black-rgb), 0.5);
+  background: rgba(var(--bg-rgb), 0.5);
   border: 1.5px solid rgba(var(--accent-rgb), 0.45);
   border-radius: 5px;
   cursor: pointer;
@@ -556,8 +559,8 @@ button.perfume-card__imagen {
   top: 45%;
   width: 0.28rem;
   height: 0.55rem;
-  border-right: 2px solid var(--black);
-  border-bottom: 2px solid var(--black);
+  border-right: 2px solid var(--on-brand);
+  border-bottom: 2px solid var(--on-brand);
   transform: translate(-50%, -50%) rotate(45deg) scale(0);
   transition: transform 0.15s ease;
 }
@@ -595,7 +598,7 @@ button.perfume-card__imagen {
 }
 
 .btn-limpiar:hover {
-  color: var(--black);
+  color: var(--on-brand);
   background: var(--accent);
 }
 
@@ -611,11 +614,11 @@ button.perfume-card__imagen {
   max-width: 1040px;
   margin: 0 auto;
   overflow: hidden;
-  background: linear-gradient(160deg, var(--black-3) 0%, var(--black-2) 55%, var(--black) 100%);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 55%, var(--bg) 100%);
   border: 1px solid var(--hairline);
   border-radius: 24px;
   box-shadow:
-    0 30px 60px -20px rgba(0, 0, 0, 0.6),
+    0 30px 60px -24px rgba(var(--shade-rgb), 0.28),
     inset 0 1px 0 rgba(var(--accent-light-rgb), 0.06);
   isolation: isolate;
 }
@@ -648,24 +651,24 @@ button.perfume-card__imagen {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background:
-    radial-gradient(circle at 30% 35%, rgba(var(--accent-rgb), 0.22), transparent 55%),
-    radial-gradient(circle at 80% 80%, rgba(var(--deep-rgb), 0.55), transparent 60%),
-    linear-gradient(160deg, var(--black-3), var(--black));
+    radial-gradient(circle at 45% 45%, #FFFFFF 0%, transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(var(--yellow-rgb), 0.9), transparent 60%),
+    linear-gradient(160deg, var(--bg), var(--yellow-light));
 }
 
 /* Variaciones de tono para que cada fondo se sienta distinto */
 .vitrina__slide:nth-child(3n + 2) .vitrina__media {
   background:
-    radial-gradient(circle at 70% 30%, rgba(var(--accent-rgb), 0.2), transparent 55%),
-    radial-gradient(circle at 20% 85%, rgba(184, 139, 74, 0.35), transparent 60%),
-    linear-gradient(200deg, var(--black-3), var(--black));
+    radial-gradient(circle at 60% 40%, #FFFFFF 0%, transparent 45%),
+    radial-gradient(circle at 15% 85%, rgba(var(--yellow-rgb), 0.95), transparent 60%),
+    linear-gradient(200deg, var(--bg), var(--yellow-light));
 }
 
 .vitrina__slide:nth-child(3n + 3) .vitrina__media {
   background:
-    radial-gradient(circle at 50% 20%, rgba(var(--accent-light-rgb), 0.16), transparent 50%),
-    radial-gradient(circle at 50% 100%, rgba(var(--deep-rgb), 0.6), transparent 65%),
-    linear-gradient(180deg, var(--black-3), var(--black));
+    radial-gradient(circle at 50% 35%, #FFFFFF 0%, transparent 45%),
+    radial-gradient(circle at 50% 100%, rgba(var(--yellow-rgb), 0.9), transparent 65%),
+    linear-gradient(180deg, var(--bg), var(--yellow-light));
 }
 
 /* La imagen se disuelve sobre el fondo de la card (sin corte visible) */
@@ -711,7 +714,7 @@ button.perfume-card__imagen {
   font-size: clamp(2.8rem, 2rem + 5vw, 5.5rem);
   line-height: 1;
   white-space: nowrap;
-  color: rgba(var(--accent-light-rgb), 0.05);
+  color: rgba(var(--accent-light-rgb), 0.08);
   pointer-events: none;
   user-select: none;
 }
@@ -797,6 +800,7 @@ button.perfume-card__imagen {
   line-height: 1.08;
   letter-spacing: -0.01em;
   color: var(--accent-light);
+  text-shadow: 0.04em 0.04em 0 rgba(var(--yellow-rgb), 0.8);
   text-wrap: balance;
 }
 

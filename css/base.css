@@ -4,28 +4,42 @@
 
 /* ---------- Variables ---------- */
 :root {
-  /* Paleta */
-  --black: #0A0A0D;
-  --black-2: #141210;
-  --black-3: #1C1812;
-  --accent: #E0C49A;
-  --accent-light: #F5E8D0;
-  --deep: #6B5230;
-  --text: #F5EDE0;
-  --text-dim: #B5A48F;
-  --brand-gradient: linear-gradient(135deg, #F5E8D0 0%, #E0C49A 35%, #B88B4A 65%, #E0C49A 100%);
+  /* Paleta tomada del logo: fondo amarillo/blanco, letras rojas */
+
+  /* Fondos */
+  --bg: #FFF8E1;            /* crema: fondo general */
+  --bg-2: #FFEFB8;          /* amarillo suave: fondos secundarios */
+  --surface: #FFFFFF;       /* blanco: tarjetas, drawers, header */
+  --yellow: #FCC62B;        /* amarillo del logo */
+  --yellow-light: #FFE38A;
+
+  /* Rojos */
+  --red: #E3262A;           /* rojo del logo */
+  --accent: #D7191F;        /* rojo de acento: etiquetas, precios, foco */
+  --accent-light: #B51219;  /* rojo de títulos (más oscuro para leerse bien) */
+  --deep: #7E0B10;          /* rojo profundo: sombras de títulos, separadores */
+
+  /* Texto */
+  --text: #3A1E14;
+  --text-dim: #6E5140;
+  --on-brand: #FFFFFF;      /* texto sobre botones rojos */
+
+  --brand-gradient: linear-gradient(135deg, #EE3A34 0%, #D7191F 50%, #B3111A 100%);
 
   /* Variantes RGB para usar con rgba(var(--x-rgb), alpha) */
-  --black-rgb: 10, 10, 13;
-  --black-2-rgb: 20, 18, 16;
-  --black-3-rgb: 28, 24, 18;
-  --accent-rgb: 224, 196, 154;
-  --accent-light-rgb: 245, 232, 208;
-  --deep-rgb: 107, 82, 48;
-  --text-rgb: 245, 237, 224;
+  --bg-rgb: 255, 248, 225;
+  --bg-2-rgb: 255, 239, 184;
+  --surface-rgb: 255, 255, 255;
+  --yellow-rgb: 252, 198, 43;
+  --red-rgb: 227, 38, 42;
+  --accent-rgb: 215, 25, 31;
+  --accent-light-rgb: 181, 18, 25;
+  --deep-rgb: 126, 11, 16;
+  --text-rgb: 58, 30, 20;
+  --shade-rgb: 70, 25, 10;  /* sombras y overlay cálidos (no negro puro) */
 
   /* Borde fino compartido */
-  --hairline: rgba(245, 232, 208, 0.10);
+  --hairline: rgba(var(--accent-light-rgb), 0.14);
 
   --danger: #e5484d;
   --danger-rgb: 229, 72, 77;
@@ -37,9 +51,9 @@
   --ig-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 
   /* Glass */
-  --glass-bg: rgba(28, 24, 18, 0.55);
-  --glass-border: rgba(245, 232, 208, 0.12);
-  --glass-highlight: rgba(245, 232, 208, 0.08);
+  --glass-bg: rgba(var(--surface-rgb), 0.62);
+  --glass-border: rgba(var(--accent-light-rgb), 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.8);
 
   /* Tipografía */
   --font-serif: "Playfair Display", Georgia, "Times New Roman", serif;
@@ -71,7 +85,7 @@
   --radius-md: clamp(12px, 0.7rem + 0.3vw, 16px);
   --radius-lg: 20px;
   --radius-pill: 999px;
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 14px 34px rgba(var(--shade-rgb), 0.14);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --t-fast: 0.2s var(--ease);
   --t-med: 0.35s var(--ease);
@@ -81,7 +95,7 @@
   --z-drawer: 300;
   --z-toast: 400;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* ---------- Reset ---------- */
@@ -106,10 +120,11 @@ body {
   font-size: var(--fs-base);
   line-height: 1.6;
   color: var(--text);
-  background-color: var(--black);
+  background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(224, 196, 154, 0.10), transparent 70%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(107, 82, 48, 0.18), transparent 70%);
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(var(--yellow-rgb), 0.35), transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--yellow-rgb), 0.25), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 0% 60%, rgba(255, 255, 255, 0.9), transparent 70%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -159,7 +174,7 @@ h1, h2, h3, h4 {
 
 ::selection {
   background: var(--accent);
-  color: var(--black);
+  color: var(--on-brand);
 }
 
 :focus-visible {
@@ -193,14 +208,14 @@ h1, h2, h3, h4 {
   border: 1px solid var(--glass-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
-    0 8px 32px rgba(0, 0, 0, 0.35);
+    inset 0 -1px 0 rgba(var(--shade-rgb), 0.05),
+    0 8px 28px rgba(var(--shade-rgb), 0.10);
 }
 
 /* Fallback si no hay backdrop-filter */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .glass {
-    background: rgba(20, 18, 16, 0.94);
+    background: rgba(var(--bg-2-rgb), 0.94);
   }
 }
 
@@ -214,18 +229,18 @@ h1, h2, h3, h4 {
   font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--black);
+  color: var(--on-brand);
   background: var(--brand-gradient);
   background-size: 200% 200%;
   border-radius: var(--radius-pill);
-  box-shadow: 0 6px 20px rgba(224, 196, 154, 0.25);
+  box-shadow: 0 6px 20px rgba(var(--accent-rgb), 0.25);
   transition: transform var(--t-fast), box-shadow var(--t-fast), background-position var(--t-med);
 }
 
 .btn-principal:hover {
   transform: translateY(-2px);
   background-position: 100% 50%;
-  box-shadow: 0 10px 28px rgba(224, 196, 154, 0.35);
+  box-shadow: 0 10px 28px rgba(var(--accent-rgb), 0.35);
 }
 
 .btn-principal:active {
@@ -240,13 +255,13 @@ h1, h2, h3, h4 {
   font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--accent-light);
-  border: 1px solid rgba(224, 196, 154, 0.4);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
   border-radius: var(--radius-pill);
   transition: background-color var(--t-fast), border-color var(--t-fast);
 }
 
 .btn-secundario:hover {
-  background-color: rgba(224, 196, 154, 0.1);
+  background-color: rgba(var(--accent-rgb), 0.1);
   border-color: var(--accent);
 }
 
@@ -261,10 +276,10 @@ h1, h2, h3, h4 {
   font-size: var(--fs-sm);
   font-weight: 500;
   text-align: center;
-  color: var(--black);
+  color: var(--on-brand);
   background: var(--brand-gradient);
   border-radius: var(--radius-pill);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(var(--shade-rgb), 0.25);
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, 20px);

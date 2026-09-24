@@ -15,7 +15,7 @@
 
 .faq__item {
   overflow: hidden;
-  background: linear-gradient(160deg, var(--black-3) 0%, var(--black-2) 100%);
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg-2) 100%);
   border: 1px solid var(--hairline);
   border-radius: 16px;
   transition: border-color var(--t-fast), box-shadow var(--t-fast);
@@ -27,7 +27,7 @@
 
 .faq__item[open] {
   border-color: rgba(var(--accent-rgb), 0.3);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px rgba(var(--shade-rgb), 0.10);
 }
 
 .faq__pregunta {

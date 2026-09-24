@@ -2,7 +2,7 @@
    RESPONSIVE — se carga último
    Base (mobile): 1 columna (definida en catalogo.css)
    ≥ 768px  → 2 columnas
-   ≥ 1100px → 3 columnas
+   ≥ 1024px → 3 columnas (pantallas de computadora)
    ========================================================= */
 
 /* ---------- Mobile chico ---------- */
@@ -27,13 +27,6 @@
 
   .hero__acciones > * {
     width: 100%;
-  }
-}
-
-/* ---------- Logo en el header ---------- */
-@media (min-width: 600px) {
-  .logo {
-    display: inline-block;
   }
 }
 
@@ -83,8 +76,8 @@
   }
 }
 
-/* ---------- Desktop: 3 columnas ---------- */
-@media (min-width: 1100px) {
+/* ---------- Computadora: 3 columnas ---------- */
+@media (min-width: 1024px) {
   .grilla {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
