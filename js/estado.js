@@ -29,7 +29,6 @@ const sinResultados = document.getElementById("sin-resultados");
 const categoryFilters = document.getElementById("lista-categorias");
 const filtroTipoContenedor = document.getElementById("opciones-tipos");
 const filtroVariedadContenedor = document.getElementById("opciones-variedades");
-const filtroPrecioContenedor = document.getElementById("opciones-precios");
 const verTodosButton = document.getElementById("btn-ver-todos");
 const limpiarFiltrosButton = document.getElementById("btn-limpiar-filtros");
 
@@ -62,13 +61,14 @@ function escaparHTML(valor) {
 
 let productos = [];
 
-// "Explorar": selección única ("todos" o una categoría del JSON)
+// "Explorar": selección única de sección ("todos" o una clave de SECCIONES)
+// y, dentro de ella, de categoría ("todos" o una categoría del JSON)
+let seccionActiva = "todos";
 let categoriaActiva = "todos";
 
 // "Filtrar": selección múltiple (OR dentro del grupo, AND entre grupos)
 let tiposActivos = new Set();
 let variedadesActivas = new Set();
-let preciosActivos = new Set();
 
 let textoSearchActivo = "";
 

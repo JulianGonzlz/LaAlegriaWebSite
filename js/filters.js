@@ -1,11 +1,14 @@
 /* =========================================================
-   FILTERS — categorías, panel "Filtrar", búsqueda y carga del JSON
+   FILTERS — secciones, categorías, panel "Filtrar", búsqueda y carga de los JSON
    ========================================================= */
 
-const RANGOS_PRECIO = [
-  { clave: "hasta-5000", etiqueta: "Hasta $5.000", test: (precio) => precio > 0 && precio <= 5000 },
-  { clave: "5000-15000", etiqueta: "$5.000 a $15.000", test: (precio) => precio > 5000 && precio <= 15000 },
-  { clave: "mas-15000", etiqueta: "Más de $15.000", test: (precio) => precio > 15000 }
+// Cada sección del catálogo sale de su propio JSON
+const SECCIONES = [
+  { clave: "pastas", nombre: "Pastas frescas", archivo: "data/productos.json" },
+  { clave: "bebidas", nombre: "Bebidas", archivo: "data/bebidas.json" },
+  { clave: "lacteos", nombre: "Lácteos", archivo: "data/lacteos.json" },
+  { clave: "panaderia", nombre: "Panadería", archivo: "data/panaderia.json" },
+  { clave: "almacen", nombre: "Almacén", archivo: "data/almacen.json" }
 ];
 
 const DEMORA_BUSQUEDA = 150;
@@ -15,7 +18,6 @@ const DEMORA_BUSQUEDA = 150;
 function conjuntoDeGrupo(grupo) {
   if (grupo === "tipo") return tiposActivos;
   if (grupo === "variedad") return variedadesActivas;
-  if (grupo === "precio") return preciosActivos;
   return null;
 }
 
@@ -46,8 +48,12 @@ function ordenarAlfabetico(lista) {
   return [...lista].sort((a, b) => a.localeCompare(b, "es"));
 }
 
-function buscarRango(clave) {
-  return RANGOS_PRECIO.find((rango) => rango.clave === clave) || null;
+function buscarSeccion(clave) {
+  return SECCIONES.find((seccion) => seccion.clave === clave) || null;
+}
+
+function productosDeSeccion(clave) {
+  return clave === "todos" ? productos : productos.filter((p) => p.seccion === clave);
 }
 
 /* ---------- Filtrado ---------- */
@@ -57,26 +63,18 @@ function obtenerProductosFiltrados() {
 
   return productos.filter((producto) => {
     // Explorar (selección única)
+    if (seccionActiva !== "todos" && producto.seccion !== seccionActiva) return false;
     if (categoriaActiva !== "todos" && producto.categoria !== categoriaActiva) return false;
 
     // Panel "Filtrar": OR dentro del grupo, AND entre grupos
-    // "Tipo de pasta" = categoría del JSON (permite elegir varias a la vez)
+    // "Tipo de producto" = categoría del JSON (permite elegir varias a la vez)
     if (tiposActivos.size > 0 && !tiposActivos.has(producto.categoria)) return false;
     if (variedadesActivas.size > 0 && !variedadesActivas.has(producto.variedad)) return false;
-
-    // Un producto entra en un rango si alguna de sus presentaciones cae en él
-    if (preciosActivos.size > 0) {
-      const precios = obtenerPresentaciones(producto).map((presentacion) => presentacion.precio);
-      const cumplePrecio = [...preciosActivos].some((clave) => {
-        const rango = buscarRango(clave);
-        return rango && precios.some((precio) => rango.test(precio));
-      });
-      if (!cumplePrecio) return false;
-    }
 
     // Búsqueda por texto
     if (texto) {
       const campos = [
+        buscarSeccion(producto.seccion)?.nombre,
         producto.nombre,
         producto.categoria,
         producto.variedad,
@@ -94,16 +92,12 @@ function obtenerProductosFiltrados() {
 function construirTituloCatalogo() {
   const partes = [];
 
+  if (seccionActiva !== "todos") partes.push(buscarSeccion(seccionActiva)?.nombre ?? capitalizar(seccionActiva));
   if (categoriaActiva !== "todos") partes.push(capitalizar(categoriaActiva));
-  // No repite la categoría si también está marcada como "Tipo de pasta"
+  // No repite la categoría si también está marcada como "Tipo de producto"
   const tiposTitulo = [...tiposActivos].filter((tipo) => tipo !== categoriaActiva);
   if (tiposTitulo.length) partes.push(tiposTitulo.map(capitalizar).join(", "));
   if (variedadesActivas.size) partes.push([...variedadesActivas].join(", "));
-  if (preciosActivos.size) {
-    partes.push(
-      [...preciosActivos].map((clave) => buscarRango(clave)?.etiqueta).filter(Boolean).join(", ")
-    );
-  }
   if (textoSearchActivo) partes.push(`"${textoSearchActivo}"`);
 
   return (
@@ -128,16 +122,16 @@ function abrirCatalogo() {
   if (!yaVisible) window.scrollTo({ top: 0, behavior: "instant" });
 }
 
-function marcarCategoriaActiva() {
+function marcarSeccionActiva() {
   categoryFilters.querySelectorAll(".categoria-btn").forEach((boton) => {
-    const activa = boton.dataset.categoria === categoriaActiva;
+    const activa = boton.dataset.seccion === seccionActiva;
     boton.classList.toggle("activa", activa);
     if (activa) boton.setAttribute("aria-current", "true");
     else boton.removeAttribute("aria-current");
   });
 
   categoryFilters.querySelectorAll(".brand-list__btn").forEach((boton) => {
-    const activa = boton.dataset.categoria === categoriaActiva && variedadesActivas.has(boton.dataset.variedad);
+    const activa = boton.dataset.seccion === seccionActiva && boton.dataset.categoria === categoriaActiva;
     boton.classList.toggle("activa", activa);
   });
 }
@@ -146,10 +140,13 @@ function actualizarCatalogo() {
   const lista = obtenerProductosFiltrados();
 
   mostrarProductos(lista, catalogoContainer);
+  sinResultados.textContent = productosDeSeccion(seccionActiva).length === 0
+    ? "Estamos preparando esta sección. Muy pronto vas a encontrar productos acá."
+    : "No encontramos productos con esos filtros. Probá con otra búsqueda.";
   sinResultados.classList.toggle("oculto", lista.length > 0);
   catalogoTitulo.innerHTML = construirTituloCatalogo();
 
-  marcarCategoriaActiva();
+  marcarSeccionActiva();
   actualizarResumenFiltros();
 }
 
@@ -164,27 +161,23 @@ function opcionFiltroHTML(grupo, valor, etiqueta) {
     </label>`;
 }
 
-function renderizarFiltros() {
-  const categorias = valoresUnicos(productos, "categoria");
-
-  // Categorías con sus subcategorías (variedades de esa categoría).
-  // Si hay una sola variedad no se muestra sublista.
-  const categoriasHTML = categorias
-    .map((categoria, indice) => {
-      const productosCategoria = productos.filter((p) => p.categoria === categoria);
-      const subcategorias = valoresUnicos(productosCategoria, "variedad");
-      const tieneSublista = subcategorias.length > 1;
-      const idLista = `subcategorias-${indice}`;
+// Secciones con sus categorías. Si la sección tiene una sola categoría no se muestra sublista.
+function renderizarExplorar() {
+  const seccionesHTML = SECCIONES
+    .map((seccion) => {
+      const categorias = valoresUnicos(productosDeSeccion(seccion.clave), "categoria");
+      const tieneSublista = categorias.length > 1;
+      const idLista = `subcategorias-${seccion.clave}`;
 
       const sublistaHTML = tieneSublista
-        ? `<ul class="brand-list" id="${idLista}" data-categoria="${escaparHTML(categoria)}"
-               aria-label="${escaparHTML(`Variedades de ${capitalizar(categoria)}`)}" inert>
-             ${subcategorias
-               .map((variedad) => `
+        ? `<ul class="brand-list" id="${idLista}" data-seccion="${escaparHTML(seccion.clave)}"
+               aria-label="${escaparHTML(`Categorías de ${seccion.nombre}`)}" inert>
+             ${categorias
+               .map((categoria) => `
                  <li>
                    <button class="brand-list__btn" type="button"
-                           data-categoria="${escaparHTML(categoria)}" data-variedad="${escaparHTML(variedad)}"
-                           aria-label="${escaparHTML(`Ver ${capitalizar(categoria)}: ${variedad}`)}">${escaparHTML(variedad)}</button>
+                           data-seccion="${escaparHTML(seccion.clave)}" data-categoria="${escaparHTML(categoria)}"
+                           aria-label="${escaparHTML(`Ver ${seccion.nombre}: ${capitalizar(categoria)}`)}">${escaparHTML(capitalizar(categoria))}</button>
                  </li>`)
                .join("")}
            </ul>`
@@ -192,10 +185,10 @@ function renderizarFiltros() {
 
       return `
         <div class="categoria-grupo" role="listitem">
-          <button class="categoria-btn" type="button" data-categoria="${escaparHTML(categoria)}"
-                  aria-label="${escaparHTML(`Ver categoría ${capitalizar(categoria)}`)}"
+          <button class="categoria-btn" type="button" data-seccion="${escaparHTML(seccion.clave)}"
+                  aria-label="${escaparHTML(`Ver sección ${seccion.nombre}`)}"
                   ${tieneSublista ? `aria-expanded="false" aria-controls="${idLista}"` : ""}>
-            ${escaparHTML(capitalizar(categoria))}
+            ${escaparHTML(seccion.nombre)}
           </button>
           ${sublistaHTML}
         </div>`;
@@ -204,118 +197,124 @@ function renderizarFiltros() {
 
   categoryFilters.innerHTML = `
     <div class="categoria-grupo" role="listitem">
-      <button class="categoria-btn" type="button" data-categoria="todos"
-              aria-label="Ver todas las categorías">Todas</button>
+      <button class="categoria-btn" type="button" data-seccion="todos"
+              aria-label="Ver todas las secciones">Todas</button>
     </div>
-    ${categoriasHTML}`;
+    ${seccionesHTML}`;
 
   categoryFilters.querySelectorAll(".categoria-btn").forEach((boton) => {
-    boton.addEventListener("click", seleccionarCategoria);
+    boton.addEventListener("click", seleccionarSeccion);
   });
   categoryFilters.querySelectorAll(".brand-list__btn").forEach((boton) => {
-    boton.addEventListener("click", seleccionarSubcategoria);
+    boton.addEventListener("click", seleccionarCategoria);
   });
+}
 
-  // Panel "Filtrar"
-  filtroTipoContenedor.innerHTML = valoresUnicos(productos, "categoria")
+// Panel "Filtrar": las opciones de tipo y variedad son las de la sección elegida
+function renderizarOpcionesFiltro() {
+  const disponibles = productosDeSeccion(seccionActiva);
+
+  filtroTipoContenedor.innerHTML = valoresUnicos(disponibles, "categoria")
     .map((categoria) => opcionFiltroHTML("tipo", categoria, capitalizar(categoria)))
     .join("");
 
-  filtroVariedadContenedor.innerHTML = ordenarAlfabetico(valoresUnicos(productos, "variedad"))
+  filtroVariedadContenedor.innerHTML = ordenarAlfabetico(valoresUnicos(disponibles, "variedad"))
     .map((variedad) => opcionFiltroHTML("variedad", variedad, capitalizar(variedad)))
     .join("");
 
-  filtroPrecioContenedor.innerHTML = RANGOS_PRECIO
-    .map((rango) => opcionFiltroHTML("precio", rango.clave, rango.etiqueta))
-    .join("");
-
   sincronizarCheckboxesFiltro();
-  marcarCategoriaActiva();
+}
+
+function renderizarFiltros() {
+  renderizarExplorar();
+  renderizarOpcionesFiltro();
+  marcarSeccionActiva();
   actualizarResumenFiltros();
 }
 
-/* ---------- Categorías (Explorar) ---------- */
+/* ---------- Secciones y categorías (Explorar) ---------- */
 
-function cerrarSubcategorias(exceptoCategoria) {
+function cerrarSubcategorias(exceptoSeccion) {
   categoryFilters.querySelectorAll(".brand-list").forEach((lista) => {
-    if (lista.dataset.categoria === exceptoCategoria) return;
+    if (lista.dataset.seccion === exceptoSeccion) return;
     lista.classList.remove("abierta");
     lista.inert = true;
   });
 
   categoryFilters.querySelectorAll(".categoria-btn[aria-expanded]").forEach((boton) => {
-    if (boton.dataset.categoria === exceptoCategoria) return;
+    if (boton.dataset.seccion === exceptoSeccion) return;
     boton.setAttribute("aria-expanded", "false");
   });
 }
 
-function alternarSubcategorias(categoria) {
+function alternarSubcategorias(seccion) {
   const lista = [...categoryFilters.querySelectorAll(".brand-list")]
-    .find((el) => el.dataset.categoria === categoria);
+    .find((el) => el.dataset.seccion === seccion);
   if (!lista) return;
 
   const abrir = !lista.classList.contains("abierta");
-  cerrarSubcategorias(categoria);
+  cerrarSubcategorias(seccion);
 
   lista.classList.toggle("abierta", abrir);
   lista.inert = !abrir;
 
   const boton = [...categoryFilters.querySelectorAll(".categoria-btn")]
-    .find((el) => el.dataset.categoria === categoria);
+    .find((el) => el.dataset.seccion === seccion);
   if (boton) boton.setAttribute("aria-expanded", String(abrir));
 }
 
-// Quita los tipos y variedades que no existen dentro de la categoría elegida,
-// para no dejar el catálogo vacío por un filtro que quedó de otra categoría
-function depurarFiltrosPorCategoria(categoria) {
-  if (categoria === "todos") return;
+// Quita los tipos y variedades que no existen dentro de la sección y categoría elegidas,
+// para no dejar el catálogo vacío por un filtro que quedó de otra sección
+function depurarFiltros() {
+  const disponibles = productos.filter((p) =>
+    (seccionActiva === "todos" || p.seccion === seccionActiva) &&
+    (categoriaActiva === "todos" || p.categoria === categoriaActiva)
+  );
+  const categorias = new Set(disponibles.map((p) => p.categoria));
+  const variedades = new Set(disponibles.map((p) => p.variedad));
 
   [...tiposActivos].forEach((tipo) => {
-    if (tipo !== categoria) tiposActivos.delete(tipo);
+    if (!categorias.has(tipo)) tiposActivos.delete(tipo);
   });
-
-  const variedadesCategoria = new Set(
-    productos.filter((p) => p.categoria === categoria).map((p) => p.variedad)
-  );
   [...variedadesActivas].forEach((variedad) => {
-    if (!variedadesCategoria.has(variedad)) variedadesActivas.delete(variedad);
+    if (!variedades.has(variedad)) variedadesActivas.delete(variedad);
   });
 }
 
-function seleccionarCategoria(evento) {
-  const categoria = evento.currentTarget.dataset.categoria;
-  if (categoria !== "todos" && !productos.some((p) => p.categoria === categoria)) return;
+function seleccionarSeccion(evento) {
+  const seccion = evento.currentTarget.dataset.seccion;
+  if (seccion !== "todos" && !buscarSeccion(seccion)) return;
 
-  const mismaCategoria = categoria === categoriaActiva;
+  const mismaSeccion = seccion === seccionActiva;
 
-  categoriaActiva = categoria;
-  depurarFiltrosPorCategoria(categoria);
+  seccionActiva = seccion;
+  categoriaActiva = "todos";
+  depurarFiltros();
   borrarBusqueda();
 
-  if (categoria === "todos") {
+  if (seccion === "todos") {
     cerrarSubcategorias();
   } else {
-    if (!mismaCategoria) cerrarSubcategorias();
-    alternarSubcategorias(categoria);
+    if (!mismaSeccion) cerrarSubcategorias();
+    alternarSubcategorias(seccion);
   }
 
-  sincronizarCheckboxesFiltro();
+  renderizarOpcionesFiltro();
   abrirCatalogo();
   actualizarCatalogo();
 }
 
-function seleccionarSubcategoria(evento) {
-  const { categoria, variedad } = evento.currentTarget.dataset;
-  const existe = productos.some((p) => p.categoria === categoria && p.variedad === variedad);
+function seleccionarCategoria(evento) {
+  const { seccion, categoria } = evento.currentTarget.dataset;
+  const existe = productos.some((p) => p.seccion === seccion && p.categoria === categoria);
   if (!existe) return;
 
+  seccionActiva = seccion;
   categoriaActiva = categoria;
-  depurarFiltrosPorCategoria(categoria);
-  variedadesActivas.clear();
-  variedadesActivas.add(variedad);
+  depurarFiltros();
   borrarBusqueda();
 
-  sincronizarCheckboxesFiltro();
+  renderizarOpcionesFiltro();
   abrirCatalogo();
   actualizarCatalogo();
   cerrarMenu();
@@ -342,7 +341,6 @@ function manejarCambioFiltro(evento) {
   if (!conjunto) return;
 
   const valor = input.value;
-  if (grupo === "precio" && !buscarRango(valor)) return;
 
   if (input.checked) conjunto.add(valor);
   else conjunto.delete(valor);
@@ -369,9 +367,8 @@ function actualizarBadge(id, cantidad) {
 function actualizarResumenFiltros() {
   actualizarBadge("badge-tipos", tiposActivos.size);
   actualizarBadge("badge-variedades", variedadesActivas.size);
-  actualizarBadge("badge-precios", preciosActivos.size);
 
-  const total = tiposActivos.size + variedadesActivas.size + preciosActivos.size;
+  const total = tiposActivos.size + variedadesActivas.size;
   limpiarFiltrosButton.classList.toggle("oculto", total === 0);
   limpiarFiltrosButton.setAttribute(
     "aria-label",
@@ -382,7 +379,6 @@ function actualizarResumenFiltros() {
 function limpiarFiltros() {
   tiposActivos.clear();
   variedadesActivas.clear();
-  preciosActivos.clear();
 
   sincronizarCheckboxesFiltro();
   abrirCatalogo();
@@ -390,14 +386,14 @@ function limpiarFiltros() {
 }
 
 function reiniciarFiltros() {
+  seccionActiva = "todos";
   categoriaActiva = "todos";
   tiposActivos.clear();
   variedadesActivas.clear();
-  preciosActivos.clear();
 
   cerrarSubcategorias();
-  sincronizarCheckboxesFiltro();
-  marcarCategoriaActiva();
+  renderizarOpcionesFiltro();
+  marcarSeccionActiva();
   actualizarResumenFiltros();
 }
 
@@ -441,16 +437,15 @@ function conectarFiltros() {
     boton.addEventListener("click", alternarGrupoFiltro);
   });
 
-  [filtroTipoContenedor, filtroVariedadContenedor, filtroPrecioContenedor].forEach((contenedor) => {
+  [filtroTipoContenedor, filtroVariedadContenedor].forEach((contenedor) => {
     contenedor.addEventListener("change", manejarCambioFiltro);
   });
 }
 
 /* ---------- Carga del catálogo ---------- */
 
-// Descarta entradas mal formadas o con id repetido
-function validarProductos(datos) {
-  const lista = Array.isArray(datos) ? datos : Array.isArray(datos?.productos) ? datos.productos : [];
+// Descarta entradas mal formadas o con id repetido (el id debe ser único entre todos los JSON)
+function validarProductos(lista) {
   const ids = new Set();
 
   return lista.filter((producto) => {
@@ -462,23 +457,42 @@ function validarProductos(datos) {
   });
 }
 
+// Descarga el JSON de una sección y marca cada producto con la sección de la que vino
+async function cargarSeccion(seccion) {
+  const respuesta = await fetch(seccion.archivo, { cache: "no-cache" });
+  if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+
+  const datos = await respuesta.json();
+  const lista = Array.isArray(datos) ? datos : Array.isArray(datos?.productos) ? datos.productos : [];
+
+  return lista.map((producto) =>
+    typeof producto === "object" && producto !== null ? { ...producto, seccion: seccion.clave } : producto
+  );
+}
+
 async function cargarProductos() {
-  try {
-    const respuesta = await fetch("data/productos.json", { cache: "no-cache" });
-    if (!respuesta.ok) throw new Error(`HTTP ${respuesta.status}`);
+  // Si falla una sección se muestran las demás
+  const resultados = await Promise.allSettled(SECCIONES.map(cargarSeccion));
+  const cargados = [];
 
-    productos = validarProductos(await respuesta.json());
+  resultados.forEach((resultado, indice) => {
+    if (resultado.status === "fulfilled") cargados.push(...resultado.value);
+    else console.error(`No se pudo cargar ${SECCIONES[indice].archivo}:`, resultado.reason);
+  });
 
-    renderizarFiltros();
-    mostrarDestacados(productos.filter((p) => p.featured === true));
-    actualizarCatalogo();
-  } catch (error) {
-    console.error("No se pudo cargar el catálogo:", error);
+  if (resultados.every((resultado) => resultado.status === "rejected")) {
     const mensaje = `
       <p class="sin-resultados">
         No pudimos cargar el catálogo. Probá recargar la página o escribinos por WhatsApp.
       </p>`;
     featuredContainer.innerHTML = mensaje;
     catalogoContainer.innerHTML = mensaje;
+    return;
   }
+
+  productos = validarProductos(cargados);
+
+  renderizarFiltros();
+  mostrarDestacados(productos.filter((p) => p.featured === true));
+  actualizarCatalogo();
 }

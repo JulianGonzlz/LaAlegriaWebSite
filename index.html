@@ -85,8 +85,8 @@
       </button>
     </nav>
 
-    <!-- Categorías (selección única) — se generan desde el JSON -->
-    <h3 class="menu-lateral__subtitulo">Categoría</h3>
+    <!-- Secciones y categorías (selección única) — se generan desde los JSON -->
+    <h3 class="menu-lateral__subtitulo">Secciones</h3>
     <div id="lista-categorias" class="lista-categorias" role="list"></div>
 
     <!-- Panel "Filtrar" (selección múltiple) -->
@@ -96,40 +96,28 @@
       <button id="btn-ver-todos" class="menu-btn menu-btn--ver-todos" type="button"
               aria-label="Ver todos los productos del catálogo">Ver todos</button>
 
-      <!-- Grupo 1: Tipo de pasta -->
+      <!-- Grupo 1: Tipo de producto -->
       <div class="grupo-filtro">
         <button id="toggle-tipos" class="grupo-filtro__toggle" type="button"
                 aria-expanded="false" aria-controls="opciones-tipos"
-                aria-label="Mostrar filtros por tipo de pasta">
-          <span>Tipo de pasta</span>
+                aria-label="Mostrar filtros por tipo de producto">
+          <span>Tipo de producto</span>
           <span id="badge-tipos" class="badge oculto" aria-hidden="true">0</span>
           <span class="grupo-filtro__flecha" aria-hidden="true"></span>
         </button>
         <div id="opciones-tipos" class="grupo-filtro__opciones oculto"></div>
       </div>
 
-      <!-- Grupo 2: Relleno / Variedad -->
+      <!-- Grupo 2: Variedad -->
       <div class="grupo-filtro">
         <button id="toggle-variedades" class="grupo-filtro__toggle" type="button"
                 aria-expanded="false" aria-controls="opciones-variedades"
-                aria-label="Mostrar filtros por relleno o variedad">
-          <span>Relleno/Variedad</span>
+                aria-label="Mostrar filtros por variedad">
+          <span>Variedad</span>
           <span id="badge-variedades" class="badge oculto" aria-hidden="true">0</span>
           <span class="grupo-filtro__flecha" aria-hidden="true"></span>
         </button>
         <div id="opciones-variedades" class="grupo-filtro__opciones oculto"></div>
-      </div>
-
-      <!-- Grupo 3: Precio -->
-      <div class="grupo-filtro">
-        <button id="toggle-precios" class="grupo-filtro__toggle" type="button"
-                aria-expanded="false" aria-controls="opciones-precios"
-                aria-label="Mostrar filtros por rango de precio">
-          <span>Precio</span>
-          <span id="badge-precios" class="badge oculto" aria-hidden="true">0</span>
-          <span class="grupo-filtro__flecha" aria-hidden="true"></span>
-        </button>
-        <div id="opciones-precios" class="grupo-filtro__opciones oculto"></div>
       </div>
 
       <button id="btn-limpiar-filtros" class="btn-limpiar oculto" type="button"
@@ -186,7 +174,7 @@
     <section id="catalogo" class="seccion catalogo oculto" aria-labelledby="titulo-catalogo">
       <h2 id="titulo-catalogo" class="titulo-seccion titulo-catalogo" aria-live="polite">Catálogo</h2>
       <p id="sin-resultados" class="sin-resultados oculto">
-        No encontramos pastas con esos filtros. Probá con otra búsqueda.
+        No encontramos productos con esos filtros. Probá con otra búsqueda.
       </p>
       <div id="catalogo-container" class="grilla"></div>
     </section>

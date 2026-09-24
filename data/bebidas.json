@@ -1,0 +1,15 @@
+[
+    {
+        "id": "coca-cola-2-25l",
+        "nombre": "Coca-Cola 2,25 L",
+        "categoria": "gaseosas",
+        "variedad": "Original",
+        "descripcion": "Gaseosa sabor cola, botella de 2,25 litros.",
+        "precio": 3500,
+        "unidad": "unidad",
+        "stock": true,
+        "opciones": [],
+        "imagenes": [],
+        "featured": false
+    }
+]
