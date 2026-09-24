@@ -91,6 +91,28 @@
   color: var(--text-dim);
 }
 
+/* Mapa de la ubicación: al tocarlo abre Google Maps */
+.faq__mapa {
+  display: block;
+  margin-top: var(--space-md);
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.faq__mapa:hover,
+.faq__mapa:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.3);
+  box-shadow: 0 8px 24px rgba(var(--shade-rgb), 0.10);
+}
+
+.faq__mapa img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 @keyframes faq-abrir {
   from {
     opacity: 0;
