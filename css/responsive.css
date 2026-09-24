@@ -1,0 +1,102 @@
+/* =========================================================
+   RESPONSIVE — se carga último
+   Base (mobile): 1 columna (definida en catalogo.css)
+   ≥ 768px  → 2 columnas
+   ≥ 1100px → 3 columnas
+   ========================================================= */
+
+/* ---------- Mobile chico ---------- */
+@media (max-width: 380px) {
+  .header {
+    gap: var(--space-xs);
+    padding: 0 0.6rem;
+  }
+
+  .buscador__icono {
+    display: none;
+  }
+
+  .buscador__input {
+    padding-left: 0.9rem;
+  }
+
+  .hero__acciones {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero__acciones > * {
+    width: 100%;
+  }
+}
+
+/* ---------- Logo en el header ---------- */
+@media (min-width: 600px) {
+  .logo {
+    display: inline-block;
+  }
+}
+
+/* ---------- Tablet: 2 columnas ---------- */
+@media (min-width: 768px) {
+  .grilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero {
+    min-height: calc(80vh - var(--header-h));
+    min-height: calc(80dvh - var(--header-h));
+  }
+
+  .footer__links {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .footer__link {
+    flex: 1 1 0;
+    max-width: 340px;
+  }
+
+  /* Vitrina: imagen a la izquierda, texto a la derecha */
+  .vitrina__slide {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    min-height: clamp(400px, 30vw + 180px, 520px);
+  }
+
+  .vitrina__media {
+    aspect-ratio: auto;
+  }
+
+  .vitrina__media {
+    -webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 50%, transparent 100%);
+  }
+
+  .vitrina__marca-agua {
+    bottom: 8%;
+  }
+
+  .vitrina__info {
+    margin-top: 0;
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+  }
+}
+
+/* ---------- Desktop: 3 columnas ---------- */
+@media (min-width: 1100px) {
+  .grilla {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero__contenido {
+    max-width: 820px;
+  }
+}
+
+/* ---------- Dispositivos sin hover (touch) ---------- */
+@media (hover: none) {
+  .perfume-card:hover {
+    transform: none;
+  }
+}

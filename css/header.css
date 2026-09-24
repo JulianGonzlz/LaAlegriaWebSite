@@ -1,0 +1,280 @@
+/* =========================================================
+   HEADER — header fijo, buscador, hero de inicio, títulos
+   ========================================================= */
+
+/* ---------- Header fijo ---------- */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0 var(--gutter);
+  border-width: 0 0 1px 0;
+  border-radius: 0;
+  transform: translateY(0);
+  transition: transform var(--t-med);
+  will-change: transform;
+}
+
+/* Oculto al scrollear hacia abajo (lo agrega header.js) */
+.header.header-oculto,
+body.drawer-abierto .header {
+  transform: translateY(-100%);
+}
+
+.header__izq,
+.header__der {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* Logo (visible desde 600px, ver responsive.css) */
+.logo {
+  display: none;
+  font-family: var(--font-serif);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  white-space: nowrap;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  transition: opacity var(--t-fast);
+}
+
+.logo:hover {
+  opacity: 0.85;
+}
+
+/* Botones de ícono (☰ y 🛒) */
+.btn-icono {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(2.5rem, 2.3rem + 0.6vw, 2.9rem);
+  height: clamp(2.5rem, 2.3rem + 0.6vw, 2.9rem);
+  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  line-height: 1;
+  color: var(--accent-light);
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transition: background-color var(--t-fast), border-color var(--t-fast);
+}
+
+.btn-icono:hover {
+  background-color: rgba(224, 196, 154, 0.1);
+  border-color: var(--glass-border);
+}
+
+/* Contador del carrito */
+.contador-carrito {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.3rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--black);
+  background: var(--brand-gradient);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: transform var(--t-fast);
+}
+
+.contador-carrito.pulso {
+  transform: scale(1.25);
+}
+
+/* ---------- Buscador ---------- */
+.buscador {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  justify-self: center;
+}
+
+.buscador__icono {
+  position: absolute;
+  left: clamp(0.8rem, 0.7rem + 0.3vw, 1rem);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.buscador__input {
+  width: 100%;
+  height: clamp(2.4rem, 2.2rem + 0.6vw, 2.75rem);
+  padding: 0 clamp(0.9rem, 0.8rem + 0.4vw, 1.2rem) 0 clamp(2.2rem, 2rem + 0.6vw, 2.6rem);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: rgba(10, 10, 13, 0.45);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  outline: none;
+  transition: border-color var(--t-fast), background-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.buscador__input::placeholder {
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
+.buscador__input:focus {
+  border-color: var(--accent);
+  background: rgba(10, 10, 13, 0.65);
+  box-shadow: 0 0 0 3px rgba(224, 196, 154, 0.15);
+}
+
+.buscador__input::-webkit-search-cancel-button {
+  filter: sepia(1) saturate(2) hue-rotate(-10deg);
+  cursor: pointer;
+}
+
+/* ---------- Contenido principal ---------- */
+.contenido {
+  padding-top: var(--header-h);
+}
+
+.seccion {
+  width: 100%;
+  max-width: var(--contenido-max);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--gutter);
+}
+
+/* ---------- Tipografía de títulos ---------- */
+.titulo-seccion {
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--accent-light);
+  margin-bottom: var(--space-sm);
+}
+
+.subtitulo-seccion {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+  margin-bottom: var(--space-lg);
+}
+
+/* ---------- Hero de inicio ---------- */
+.hero {
+  position: relative;
+  min-height: calc(88vh - var(--header-h));
+  min-height: calc(88dvh - var(--header-h));
+  display: grid;
+  place-items: center;
+  padding: var(--space-xl) var(--gutter);
+  text-align: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(224, 196, 154, 0.18), transparent 55%),
+    radial-gradient(circle at 15% 85%, rgba(107, 82, 48, 0.35), transparent 50%),
+    radial-gradient(circle at 85% 20%, rgba(184, 139, 74, 0.18), transparent 45%),
+    linear-gradient(180deg, var(--black-2) 0%, var(--black) 100%);
+}
+
+/* Textura sutil tipo harina */
+.hero__fondo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(245, 232, 208, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+
+.hero__contenido {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  animation: hero-entrada 0.9s var(--ease) both;
+}
+
+.hero__eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero__titulo {
+  font-family: var(--font-serif);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.1em;
+}
+
+.hero__tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--fs-lg);
+  color: var(--accent-light);
+}
+
+.hero__texto {
+  max-width: 46ch;
+  font-size: var(--fs-base);
+  font-weight: 300;
+  color: var(--text-dim);
+  margin-top: var(--space-xs);
+}
+
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+@keyframes hero-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Destacados ---------- */
+.destacados {
+  padding-top: var(--space-lg);
+}

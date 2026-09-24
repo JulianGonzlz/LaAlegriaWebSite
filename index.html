@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 script-src 'self';
+                 style-src 'self' https://fonts.googleapis.com;
+                 font-src 'self' https://fonts.gstatic.com;
+                 img-src 'self' data:;
+                 connect-src 'self';
+                 object-src 'none';
+                 base-uri 'self';
+                 form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="La Alegria — Fábrica de pastas artesanales. El sabor de lo casero.">
+  <meta name="theme-color" content="#0A0A0D">
+  <title>La Alegria | El sabor de lo casero</title>
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap">
+
+  <!-- Estilos (el orden importa: base primero, responsive último) -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/catalogo.css">
+  <link rel="stylesheet" href="css/faq.css">
+  <link rel="stylesheet" href="css/carrito.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- ===================== HEADER ===================== -->
+  <header id="header" class="header glass">
+    <div class="header__izq">
+      <button id="btn-menu" class="btn-icono" type="button"
+              aria-label="Abrir menú de navegación y filtros"
+              aria-expanded="false" aria-controls="menu-lateral">☰</button>
+      <button id="logo" class="logo" type="button" aria-label="La Alegria, ir al inicio">La Alegria</button>
+    </div>
+
+    <form class="header__centro buscador" role="search" id="form-busqueda" autocomplete="off">
+      <label for="buscador" class="sr-only">Buscar pastas</label>
+      <span class="buscador__icono" aria-hidden="true">⌕</span>
+      <input id="buscador" class="buscador__input" type="search"
+             placeholder="Buscar ravioles, ñoquis, sorrentinos…"
+             maxlength="60" aria-label="Buscar productos por nombre, tipo o relleno">
+    </form>
+
+    <div class="header__der">
+      <button id="btn-carrito" class="btn-icono btn-carrito" type="button"
+              aria-label="Abrir carrito. 0 productos"
+              aria-expanded="false" aria-controls="carrito">
+        <span aria-hidden="true">🛒</span>
+        <span id="contador-carrito" class="contador-carrito oculto" aria-hidden="true">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Overlay compartido por ambos drawers -->
+  <div id="overlay" class="overlay" aria-hidden="true"></div>
+
+  <!-- ===================== MENÚ LATERAL (drawer izquierdo) ===================== -->
+  <aside id="menu-lateral" class="drawer drawer--izq menu-lateral glass"
+         aria-hidden="true" aria-label="Menú de navegación y filtros">
+    <div class="menu-lateral__cabecera">
+      <h2 class="menu-lateral__titulo">Explorar</h2>
+      <button id="cerrar-menu" class="btn-cerrar" type="button" aria-label="Cerrar menú">×</button>
+    </div>
+
+    <nav class="menu-lateral__nav" aria-label="Secciones">
+      <button id="btn-inicio" class="menu-btn" type="button" aria-label="Volver a la página de inicio">
+        Volver al inicio
+      </button>
+      <button id="btn-faq" class="menu-btn" type="button" aria-label="Ver preguntas frecuentes">
+        Preguntas frecuentes
+      </button>
+    </nav>
+
+    <!-- Categorías (selección única) — se generan desde el JSON -->
+    <h3 class="menu-lateral__subtitulo">Categoría</h3>
+    <div id="lista-categorias" class="lista-categorias" role="list"></div>
+
+    <!-- Panel "Filtrar" (selección múltiple) -->
+    <section id="panel-filtrar" class="panel-filtrar" aria-labelledby="titulo-filtrar">
+      <h3 id="titulo-filtrar" class="panel-filtrar__titulo">Filtrar</h3>
+
+      <button id="btn-ver-todos" class="menu-btn menu-btn--ver-todos" type="button"
+              aria-label="Ver todos los productos del catálogo">Ver todos</button>
+
+      <!-- Grupo 1: Tipo de pasta -->
+      <div class="grupo-filtro">
+        <button id="toggle-tipos" class="grupo-filtro__toggle" type="button"
+                aria-expanded="false" aria-controls="opciones-tipos"
+                aria-label="Mostrar filtros por tipo de pasta">
+          <span>Tipo de pasta</span>
+          <span id="badge-tipos" class="badge oculto" aria-hidden="true">0</span>
+          <span class="grupo-filtro__flecha" aria-hidden="true"></span>
+        </button>
+        <div id="opciones-tipos" class="grupo-filtro__opciones oculto"></div>
+      </div>
+
+      <!-- Grupo 2: Relleno / Variedad -->
+      <div class="grupo-filtro">
+        <button id="toggle-variedades" class="grupo-filtro__toggle" type="button"
+                aria-expanded="false" aria-controls="opciones-variedades"
+                aria-label="Mostrar filtros por relleno o variedad">
+          <span>Relleno/Variedad</span>
+          <span id="badge-variedades" class="badge oculto" aria-hidden="true">0</span>
+          <span class="grupo-filtro__flecha" aria-hidden="true"></span>
+        </button>
+        <div id="opciones-variedades" class="grupo-filtro__opciones oculto"></div>
+      </div>
+
+      <!-- Grupo 3: Precio -->
+      <div class="grupo-filtro">
+        <button id="toggle-precios" class="grupo-filtro__toggle" type="button"
+                aria-expanded="false" aria-controls="opciones-precios"
+                aria-label="Mostrar filtros por rango de precio">
+          <span>Precio</span>
+          <span id="badge-precios" class="badge oculto" aria-hidden="true">0</span>
+          <span class="grupo-filtro__flecha" aria-hidden="true"></span>
+        </button>
+        <div id="opciones-precios" class="grupo-filtro__opciones oculto"></div>
+      </div>
+
+      <button id="btn-limpiar-filtros" class="btn-limpiar oculto" type="button"
+              aria-label="Limpiar todos los filtros activos">Limpiar filtros</button>
+    </section>
+
+    <!-- Contactos del menú -->
+    <div class="menu-contactos">
+      <a class="menu-contacto menu-contacto--wa"
+         href="https://wa.me/5492284466595" target="_blank" rel="noopener noreferrer"
+         aria-label="Escribinos por WhatsApp (se abre en una pestaña nueva)">
+        <span aria-hidden="true">💬</span> WhatsApp
+      </a>
+      <a class="menu-contacto menu-contacto--ig"
+         href="https://www.instagram.com/laalegriapastas/" target="_blank" rel="noopener noreferrer"
+         aria-label="Seguinos en Instagram (se abre en una pestaña nueva)">
+        <span aria-hidden="true">📸</span> Instagram
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===================== CONTENIDO PRINCIPAL ===================== -->
+  <main id="contenido" class="contenido">
+
+    <!-- Vista: INICIO (hero) -->
+    <section id="inicio" class="hero" aria-labelledby="hero-titulo">
+      <div class="hero__fondo" aria-hidden="true"></div>
+      <div class="hero__contenido">
+        <p class="hero__eyebrow">Fábrica de pastas artesanales</p>
+        <h1 id="hero-titulo" class="hero__titulo">La Alegria</h1>
+        <p class="hero__tagline">El sabor de lo casero</p>
+        <p class="hero__texto">
+          Pastas frescas amasadas todos los días, con recetas de familia
+          y rellenos hechos a mano.
+        </p>
+        <div class="hero__acciones">
+          <button id="hero-cta" class="btn-principal" type="button"
+                  aria-label="Ver el catálogo completo de pastas">Ver catálogo</button>
+          <a class="btn-secundario" href="https://wa.me/5492284466595"
+             target="_blank" rel="noopener noreferrer"
+             aria-label="Hacer un pedido por WhatsApp (se abre en una pestaña nueva)">Pedir por WhatsApp</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Destacados (visibles junto al hero) -->
+    <section id="destacados" class="seccion destacados" aria-labelledby="titulo-destacados">
+      <h2 id="titulo-destacados" class="titulo-seccion">Los más pedidos</h2>
+      <p class="subtitulo-seccion">Recién salidos de la mesa de amasado</p>
+      <div id="featured-container" class="vitrina-contenedor"></div>
+    </section>
+
+    <!-- Vista: CATÁLOGO -->
+    <section id="catalogo" class="seccion catalogo oculto" aria-labelledby="titulo-catalogo">
+      <h2 id="titulo-catalogo" class="titulo-seccion titulo-catalogo" aria-live="polite">Catálogo</h2>
+      <p id="sin-resultados" class="sin-resultados oculto">
+        No encontramos pastas con esos filtros. Probá con otra búsqueda.
+      </p>
+      <div id="catalogo-container" class="grilla"></div>
+    </section>
+
+    <!-- Vista: PREGUNTAS FRECUENTES -->
+    <section id="preguntas-frecuentes" class="seccion faq oculto" aria-labelledby="titulo-faq">
+      <h2 id="titulo-faq" class="titulo-seccion">Preguntas frecuentes</h2>
+
+      <div class="faq__lista">
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Hacen envíos?</summary>
+          <div class="faq__respuesta">
+            <p>Sí, hacemos envíos a toda la zona. Coordinamos por WhatsApp.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Cómo hago un pedido?</summary>
+          <div class="faq__respuesta">
+            <p>Agregá los productos al carrito y envianos la consulta por WhatsApp.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Qué medios de pago aceptan?</summary>
+          <div class="faq__respuesta">
+            <p>Aceptamos transferencia bancaria y efectivo.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Los productos son congelados?</summary>
+          <div class="faq__respuesta">
+            <p>Nuestras pastas se preparan frescas. Podés congelarlas en casa.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Cuánto rinde cada producto?</summary>
+          <div class="faq__respuesta">
+            <p>Consultá la información de rendimiento en cada producto del catálogo.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Tienen local físico?</summary>
+          <div class="faq__respuesta">
+            <p>Vendemos de forma online y coordinamos entregas por la zona.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Puedo hacer un pedido para eventos?</summary>
+          <div class="faq__respuesta">
+            <p>Sí, hacemos pedidos grandes. Consultanos con anticipación por WhatsApp.</p>
+          </div>
+        </details>
+
+        <details class="faq__item">
+          <summary class="faq__pregunta">¿Cuánto tiempo antes debo pedir?</summary>
+          <div class="faq__respuesta">
+            <p>Te recomendamos hacer el pedido con al menos 24hs de anticipación.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== CARRITO (drawer derecho) ===================== -->
+  <aside id="carrito" class="drawer drawer--der carrito glass"
+         aria-hidden="true" aria-labelledby="titulo-carrito">
+    <div class="carrito__cabecera">
+      <button id="cerrar-carrito" class="btn-volver" type="button"
+              aria-label="Cerrar carrito y volver">← Volver</button>
+      <h2 id="titulo-carrito" class="carrito__titulo">Tu pedido</h2>
+    </div>
+
+    <!-- Items, total y botón de WhatsApp: los genera renderizarCarrito() -->
+    <div id="cart-container" class="carrito__contenido"></div>
+  </aside>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <p class="footer__texto">Contactanos para hacer tu pedido</p>
+    <div class="footer__links">
+      <a class="footer__link footer__link--wa"
+         href="https://wa.me/5492284466595" target="_blank" rel="noopener noreferrer"
+         aria-label="Contactar por WhatsApp (se abre en una pestaña nueva)">
+        <span class="footer__icono" aria-hidden="true">💬</span>
+        <span class="footer__info">
+          <strong class="footer__nombre">WhatsApp</strong>
+          <small class="footer__sub">Pedidos y consultas</small>
+        </span>
+      </a>
+      <a class="footer__link footer__link--ig"
+         href="https://www.instagram.com/laalegriapastas/" target="_blank" rel="noopener noreferrer"
+         aria-label="Ver Instagram de La Alegria (se abre en una pestaña nueva)">
+        <span class="footer__icono" aria-hidden="true">📸</span>
+        <span class="footer__info">
+          <strong class="footer__nombre">Instagram</strong>
+          <small class="footer__sub">@laalegriapastas</small>
+        </span>
+      </a>
+    </div>
+    <p class="footer__legal">© La Alegria · El sabor de lo casero</p>
+  </footer>
+
+  <!-- Toast de notificaciones -->
+  <div id="toast" class="toast oculto" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===================== SCRIPTS (orden estricto) ===================== -->
+  <script src="js/estado.js" defer></script>
+  <script src="js/cards.js" defer></script>
+  <script src="js/cart.js" defer></script>
+  <script src="js/filters.js" defer></script>
+  <script src="js/drawers.js" defer></script>
+  <script src="js/header.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>

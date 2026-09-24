@@ -1,0 +1,222 @@
+/* =========================================================
+   CARRITO — drawer lateral derecho
+   ========================================================= */
+
+#carrito {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-drawer);
+  width: min(92vw, 30rem);
+  display: flex;
+  flex-direction: column;
+  border-width: 0 0 0 1px;
+  border-radius: 0;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 0.25s ease, visibility 0.25s ease;
+}
+
+#carrito.abierto {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+/* Cabecera */
+.carrito__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: clamp(1rem, 0.85rem + 0.75vw, 1.5rem);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.carrito__titulo {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  color: var(--accent-light);
+}
+
+.btn-volver {
+  padding: 0.45rem 0.9rem;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-dim);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+  transition: color var(--t-fast), border-color var(--t-fast), background-color var(--t-fast);
+}
+
+.btn-volver:hover {
+  color: var(--accent-light);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+
+/* Contenedor dinámico (lista + pie) */
+.carrito__contenido {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estado vacío */
+.carrito__vacio {
+  padding: var(--space-xl) var(--space-lg);
+  font-size: var(--fs-sm);
+  text-align: center;
+  color: var(--text-dim);
+}
+
+/* Lista */
+.carrito__lista {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.6rem, 0.5rem + 0.4vw, 0.8rem);
+  padding: clamp(0.8rem, 0.7rem + 0.5vw, 1.2rem) clamp(1rem, 0.85rem + 0.75vw, 1.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.carrito-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: clamp(0.75rem, 0.65rem + 0.4vw, 1rem);
+  background: linear-gradient(160deg, rgba(var(--black-3-rgb), 0.9), rgba(var(--black-2-rgb), 0.9));
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+}
+
+.carrito-item__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.carrito-item__nombre {
+  font-family: var(--font-serif);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--accent-light);
+}
+
+.carrito-item__tipo {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.carrito-item__precio {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.carrito-item__acciones {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+
+/* Controles de cantidad */
+.carrito-item__controles {
+  display: flex;
+  align-items: center;
+  background: rgba(var(--black-rgb), 0.5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-pill);
+}
+
+.cantidad-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--accent-light);
+  border-radius: 50%;
+  transition: background-color var(--t-fast);
+}
+
+.cantidad-btn:hover {
+  background: rgba(var(--accent-rgb), 0.12);
+}
+
+.cantidad-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: none;
+}
+
+.cantidad-valor {
+  min-width: 1.75rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Botón "Quitar" */
+.btn-quitar {
+  padding: 0.2rem 0.6rem;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--danger);
+  border: 1px solid rgba(var(--danger-rgb), 0.35);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--t-fast), color var(--t-fast);
+}
+
+.btn-quitar:hover {
+  color: #fff;
+  background: rgba(var(--danger-rgb), 0.85);
+}
+
+/* Pie: total + WhatsApp */
+.carrito__pie {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: clamp(1rem, 0.85rem + 0.75vw, 1.5rem);
+  padding-bottom: max(clamp(1rem, 0.85rem + 0.75vw, 1.5rem), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--hairline);
+  background: rgba(var(--black-rgb), 0.35);
+}
+
+.carrito__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+  text-align: right;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.carrito__total strong {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  color: var(--accent-light);
+}
+
+.btn-whatsapp {
+  width: 100%;
+}
+
+.btn-whatsapp[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.5);
+}
